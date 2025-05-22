@@ -5,7 +5,6 @@ class Display :
     def __init__ (self, value) :
         self.value = value
         self.display = []
-    
 
     def getLenght(self) :
         length = 0
@@ -19,7 +18,6 @@ class Display :
                 break
 
         return length
-    
 
     def buildDisplay(self) :
         display_count = self.getLenght()
@@ -48,14 +46,10 @@ class Display :
         def bottom_horizontal() :
             for i in range(1, 4) :
                 self.display[5][i + delta] = 1
-            
-        
 
         def top_left_vertical() :
             for i in range(1, 4) :
                 self.display[i][1 + delta] = 1
-            
-        
 
         def top_right_vertical() :
             for i in range(1, 4) :
