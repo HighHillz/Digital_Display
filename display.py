@@ -1,91 +1,176 @@
-#Create a digital display
-def createScreen(n) :
-  for i in range(7) :
-    screen[i].extend((5+(4*(n-1)))*[zero])
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 
-#Draw a number on the display at the specified position
-def writeNum(n, field) :
-  delta = 4*(field-1) #The "jump" needed to go to the next digit's position
+class Display :
+    def __init__ (self, value) :
+        self.value = value
+        self.display = []
+    
 
-  #Draw segments of the number (7 Segments)
-  def draw1() : #Top horizontal
-    screen[1][1+delta] = screen[1][2+delta] = screen[1][3+delta] = one
+    def getLenght(self) :
+        length = 0
+        value = self.value
 
-  def draw2() : #Middle horizontal
-    screen[3][1+delta] = screen[3][2+delta] = screen[3][3+delta] = one
+        while(value >= 0) :
+            value = value//10
+            length+=1
 
-  def draw3() : #Bottom horizontal
-    screen[5][1+delta] = screen[5][2+delta] = screen[5][3+delta] = one
+            if(value == 0) :
+                break
 
-  def draw4() : #Top left vertical
-    screen[1][1+delta] = screen[2][1+delta] = screen[3][1+delta] = one
+        return length
+    
 
-  def draw5() : #Top right vertical
-    screen[1][3+delta] = screen[2][3+delta] = screen[3][3+delta] = one
+    def buildDisplay(self) :
+        display_count = self.getLenght()
+        display_dim = {
+            "width": 5*display_count-(display_count-1),
+            "height": 7
+        }
 
-  def draw6() : #Bottom left vertical
-    screen[3][1+delta] = screen[4][1+delta] = screen[5][1+delta] = one
+        for i in range(display_dim["height"]) :
+            self.display.append([])
+            for j in range(display_dim["width"]) :
+                self.display[i].append(0)
 
-  def draw7() : #Bottom right vertical
-    screen[3][3+delta] = screen[4][3+delta] = screen[5][3+delta] = one
+    def drawDigit(self, n, display_number) :
+        delta = 4 * (display_number - 1)
 
-  #Draw specified digit (0-9)
-  if n == 0 :
-    draw1(); draw4(); draw5(); draw6(); draw7(); draw3();
-  elif n == 1 :
-    draw5(); draw7();
-  elif n == 2 :
-    draw1(); draw2(); draw3(); draw5(); draw6();
-  elif n == 3 :
-    draw1(); draw2(); draw3(); draw5(); draw7();
-  elif n == 4 :
-    draw2(); draw4(); draw5(); draw7();
-  elif n == 5 :
-    draw1(); draw3(); draw4(); draw2(); draw7();
-  elif n == 6 :
-    draw1(); draw3(); draw4(); draw2(); draw6(); draw7();
-  elif n == 7 :
-    draw1(); draw5(); draw7();
-  elif n == 8 :
-    draw1(); draw2(); draw3(); draw4(); draw5(); draw6(); draw7();
-  elif n == 9 :
-    draw1(); draw2(); draw3(); draw4(); draw5(); draw7();
+        # Helper functions use arrow syntax to preserve 'self'
+        def top_horizontal() :
+            for i in range(1, 4) :
+                self.display[1][i + delta] = 1
+          
+        def middle_horizontal() :
+            for i in range(1, 4) :
+                self.display[3][i + delta] = 1
+            
+        def bottom_horizontal() :
+            for i in range(1, 4) :
+                self.display[5][i + delta] = 1
+            
+        
 
-#Display screen on the console
-def displayScreen() :
-  for i in screen :
-    for j in i :
-      print(j, end="")
-    print()
+        def top_left_vertical() :
+            for i in range(1, 4) :
+                self.display[i][1 + delta] = 1
+            
+        
 
-#Create a display array
-screen = []
-for i in range(7) :
-  screen.append([])
+        def top_right_vertical() :
+            for i in range(1, 4) :
+                self.display[i][3 + delta] = 1
 
-#Colours specifying dark and bright cells respectively
-zero = "⬛"
-one = "🟨"
+        def bottom_left_vertical() :
+            for i in range(3, 6) :
+                self.display[i][1 + delta] = 1
 
-num = int(input("Enter an integer: "))
-test = num
+        def bottom_right_vertical() :
+            for i in range(3, 6) :
+                self.display[i][3 + delta] = 1
+        
+        if n == 0:
+            top_horizontal()
+            bottom_horizontal()
+            top_left_vertical()
+            top_right_vertical()
+            bottom_left_vertical()
+            bottom_right_vertical()
+        elif n == 1:
+            top_right_vertical()
+            bottom_right_vertical()
+        elif n == 2:
+            top_horizontal()
+            middle_horizontal()
+            bottom_horizontal()
+            top_right_vertical()
+            bottom_left_vertical()
+        elif n == 3:
+            top_horizontal()
+            middle_horizontal()
+            bottom_horizontal()
+            top_right_vertical()
+            bottom_right_vertical()
+        elif n == 4:
+            top_left_vertical()
+            middle_horizontal()
+            top_right_vertical()
+            bottom_right_vertical()
+        elif n == 5:
+            top_horizontal()
+            middle_horizontal()
+            bottom_horizontal()
+            top_left_vertical()
+            bottom_right_vertical()
+        elif n == 6:
+            top_horizontal()
+            middle_horizontal()
+            bottom_horizontal()
+            top_left_vertical()
+            bottom_left_vertical()
+            bottom_right_vertical()
+        elif n == 7:
+            top_horizontal()
+            top_right_vertical()
+            bottom_right_vertical()
+        elif n == 8:
+            top_horizontal()
+            middle_horizontal()
+            bottom_horizontal()
+            top_left_vertical()
+            top_right_vertical()
+            bottom_left_vertical()
+            bottom_right_vertical()
+        elif n == 9:
+            top_horizontal()
+            middle_horizontal()
+            bottom_horizontal()
+            top_left_vertical()
+            top_right_vertical()
+            bottom_right_vertical()
+            
+        
+        for i in range(len(self.display)) :
+            for j in range(len(self.display[i])) :
+                if (self.display[i][j] == 1) :
+                    self.display[i][j] = 1
+                else :
+                    self.display[i][j] = 0
+                
+    def drawNumber(self) :
+        value = self.value
+        l = []
 
-fields = 0
-l = []
+        while value >= 0 :
+            l.append(value % 10)
+            value //= 10
+            if(value == 0) :
+                break
+        
+        l = l[::-1]
 
-#Calculate the number of digits entered to create fields accordingly
-while test > 0 :
-  r = test % 10
-  test //= 10
-  fields += 1
-  l.append(r)
+        for i in range(len(l)) :
+            self.drawDigit(l[i], i+1)
+        
+    def displayNumber(self) :
+        self.buildDisplay()
+        self.drawNumber()
 
-l = l[::-1]
+        for i in range(len(self.display)) :
+            for j in range(len(self.display[i])) :
+                if (self.display[i][j] == 1) :
+                    print("🟨", end="")
+                else :
+                    print("⬛", end="")
+            print()
 
-createScreen(fields)
+if __name__ == "__main__":
+    ans = "y"
 
-#Write the digits at the right positions
-for i in range(len(l)) :
-  writeNum(l[i], i+1)
-
-displayScreen()
+    while ans == "y":
+        n = int(input("Enter a number: "))
+        if n < 0:
+            print("Please enter a non-negative number.")
+        Display(n).displayNumber()
+        
+        ans = input("Do you want to enter another number? ('y'/any key): ").strip().lower()
