@@ -1,0 +1,21 @@
+body {
+    background-color: #222222;
+    color: white;
+}
+
+table td {
+    border: solid 1px black;
+    border-radius: 10%;
+    width:5px;
+    height:5px;
+}
+
+.on {
+    background-color: yellow;
+    color: black;
+}
+
+.off {
+    background-color: black;
+    color: white;
+}
